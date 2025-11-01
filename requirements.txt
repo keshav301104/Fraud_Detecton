@@ -1,0 +1,19 @@
+Core data and web server
+
+pandas
+flask
+
+Machine Learning
+
+scikit-learn
+xgboost
+
+Graph Analysis
+
+networkx
+
+Plotting & Notebook (Optional but good practice)
+
+matplotlib
+seaborn
+notebook
