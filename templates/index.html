@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>              
+            <h2>Financial Fraud Detection</h2>
+        </div>
+        <p>DWDM Advanced Project</p>
+    </header>
+
+    <!-- NEW: Tab Navigation -->
+    <nav class="main-nav">
+        <button id="btn-dashboard" class="nav-tab active">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>
+            Global Dashboard
+        </button>
+        <button id="btn-modeler" class="nav-tab">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21m-9-9a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M10 10l-3.89 3.89m-2.22-2.22c.62-.62 1.35-.9 2.22-.9H10v.01Z" /></svg>
+            Live Modeler Tool
+        </button>
+    </nav>
+
+    <main>
+        <!-- NEW: Page 1 - Global Dashboard -->
+        <div id="page-dashboard" class="page active">
+            
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card card">
+                    <h4>Total Transactions</h4>
+                    <p id="kpi-total-tx">--</p>
+                </div>
+                <div class="kpi-card card">
+                    <h4>Total Volume (₹)</h4>
+                    <p id="kpi-total-volume">--</p>
+                </div>
+                <div class="kpi-card card fraud-kpi">
+                    <h4>Fraud Detected</h4>
+                    <p id="kpi-total-fraud">--</p>
+                </div>
+                <div class="kpi-card card fraud-kpi">
+                    <h4>Fraud Rate</h4>
+                    <p id="kpi-fraud-rate">--</p>
+                </div>
+            </div>
+
+            <!-- Chart & About Grid -->
+            <div class="dashboard-grid">
+                <section class="chart-card card">
+                    <h3>Transactions by Type (Full Dataset)</h3>
+                    <div class="chart-container">
+                        <canvas id="type-pie-chart"></canvas>
+                    </div>
+                </section>
+                <section class="chart-card card">
+                    <h3>Fraud vs. Safe (Full Dataset)</h3>
+                    <div class="chart-container">
+                        <canvas id="fraud-doughnut-chart"></canvas>
+                    </div>
+                </section>
+            </div>
+            
+            <section class="card about-card">
+                <h3>About This Project</h3>
+                <p>This dashboard is the frontend for an advanced Data Warehousing and Data Mining project. It analyzes a dataset of over 6 million financial transactions to identify fraud. The "Live Modeler Tool" uses a predictive model (an XGBoost Classifier) trained on personalized behavioral features to assess the risk of new, incoming transactions in real-time.</p>
+            </section>
+
+        </div>
+
+        <!-- NEW: Page 2 - Live Modeler (Our old page) -->
+        <div id="page-modeler" class="page">
+            <div class="dashboard-grid">
+                <!-- Column 1: Prediction Tool -->
+                <section class="simulator-card card">
+                    <h2>Real-Time Transaction Check</h2>
+                    <form id="predict-form">
+                        <div class="form-group">
+                            <label for="sender_id">Sender ID</label>
+                            <input list="sender-list" id="sender_id" name="sender_id" required>
+                            <datalist id="sender-list">
+                                {% for id in sender_ids %}
+                                    <option value="{{ id }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="receiver_id">Receiver ID</label>
+                            <input type="text" id="receiver_id" name="receiver_id" required value="C1234567">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="type">Type</label>
+                                <select id="type" name="type" required>
+                                    <option value="CASH_OUT">CASH_OUT</option>
+                                    <option value="TRANSFER">TRANSFER</option>
+                                    <option value="PAYMENT">PAYMENT</option>
+                                    <option value="CASH_IN">CASH_IN</option>
+                                    <option value="DEBIT">DEBIT</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">Amount</label>
+                                <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <button type="submit">Check for Fraud</button>
+                    </form>
+                    <div id="result-message" class="result" style="display: none;">
+                        <!-- Message will be inserted here by JavaScript -->
+                    </div>
+                </section>
+                <!-- Column 2: Info Card -->
+                <section class="card">
+                    <h3>About the Live Modeler</h3>
+                    <p>This tool uses our trained machine learning model to predict the probability of fraud for a new transaction.</p>
+                    <p>It works by looking up the **Sender ID's historical behavior** (like their average spending) to determine if this new transaction is a dangerous anomaly.</p>
+                    <p>Transactions from the *sample dataset* (100k rows) are loaded below for context.</p>
+                </section>
+            </div>
+            <!-- Full Width Row: Recent Transactions -->
+            <section class="recent-transactions-card card">
+                <h2>Recent Transactions from Warehouse (100k Sample)</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Sender</th>
+                                <th>Receiver</th>
+                                <th>Is Fraud?</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-table-body">
+                            <!-- Rows will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
