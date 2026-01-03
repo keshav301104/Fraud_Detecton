@@ -67,18 +67,23 @@ Place this file inside the data/ folder.
 
 You must run these 4 scripts in order, one by one. They will build all the necessary database, model, and statistics files.
 
-# Step 1: Builds the sample 100k-row database (fraud_dw.db)
+### Step 1: Builds the sample 100k-row database (fraud_dw.db)
+```
 python 1_etl.py
-
-# Step 2: Creates the advanced features for model training (analytics_base_table.csv)
+```
+### Step 2: Creates the advanced features for model training (analytics_base_table.csv)
+```
 python 2a_advanced_features.py
-
-# Step 3: Trains the XGBoost model on the new features (model.joblib)
+```
+### Step 3: Trains the XGBoost model on the new features (model.joblib)
+```
 python 2_model_training.py
+```
 
-# Step 4: Calculates stats for the main dashboard (global_stats.json)
+### Step 4: Calculates stats for the main dashboard (global_stats.json)
+```
 python 3_global_stats.py
-
+```
 
 
 (Note: Step 4 may take a minute as it processes the full 6.3 million-row dataset.)
